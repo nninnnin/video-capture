@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>Document</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+
+        touch-action: manipulation;
+      }
+
+      html,
+      body {
+        overflow: hidden;
+      }
+
+      video {
+        height: 100svh;
+        position: fixed;
+        top: 0;
+        left: 50%;
+
+        background-color: violet;
+
+        transform: scaleX(-1) translateX(50%);
+      }
+
+      canvas {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: scaleX(-1) translate(50%, -50%);
+
+        background-color: navy;
+        opacity: 0.5;
+      }
+
+      button {
+        position: fixed;
+        bottom: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+
+        padding: 10px 20px;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <video autoplay playsinline></video>
+
+    <canvas></canvas>
+
+    <button>캡쳐!</button>
+
+    <script>
+      navigator.mediaDevices
+        .getUserMedia({
+          video: true,
+          facingMode: "user",
+        })
+        .then((stream) => {
+          const video = document.querySelector("video");
+
+          video.srcObject = stream;
+          video.play();
+        })
+        .catch((err) => {
+          console.error(err);
+          alert(err);
+        });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const video = document.querySelector("video");
+
+        video.addEventListener("loadedmetadata", () => {
+          const canvas = document.querySelector("canvas");
+
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+        });
+      });
+
+      const button = document.querySelector("button");
+
+      button.addEventListener("click", () => {
+        const canvas = document.querySelector("canvas");
+        const video = document.querySelector("video");
+        const context = canvas.getContext("2d");
+
+        try {
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        } catch (error) {
+          alert(error);
+        }
+
+        context.fillStyle = "red";
+        context.arc(100, 100, 50, 0, Math.PI * 2);
+        context.fill();
+      });
+    </script>
+  </body>
+</html>
